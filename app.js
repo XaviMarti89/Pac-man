@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () =>{
+document.addEventListener('DOMContentLoaded', () => {
 
     const scoreDisplay = document.getElementById('score');
     const width = 28;
@@ -44,23 +44,23 @@ document.addEventListener('DOMContentLoaded', () =>{
 
     const squares = [];
     //create your board
-    function createBoard(){
-        for(let i=0; i<layout.length; i++){
+    function createBoard() {
+        for (let i = 0; i < layout.length; i++) {
             const square = document.createElement('div');
             grid.appendChild(square);
             squares.push(square);
 
             //add layout to the board
-            if(layout[i] === 0){
+            if (layout[i] === 0) {
                 squares[i].classList.add('pac-dot');
             }
-            if(layout[i] === 1){
+            if (layout[i] === 1) {
                 squares[i].classList.add('wall');
             }
-            if(layout[i] === 2){
+            if (layout[i] === 2) {
                 squares[i].classList.add('ghost-lair');
             }
-            if(layout[i] === 3){
+            if (layout[i] === 3) {
                 squares[i].classList.add('power-pellet');
             }
         }
@@ -68,5 +68,32 @@ document.addEventListener('DOMContentLoaded', () =>{
 
     createBoard();
 
-    console.log(squares)
+    //Create PAC-MAN
+
+    let pacmanIndex = 490;
+    squares[pacmanIndex].classList.add('pac-man');
+
+    //move PacMan
+    function movePacman(e) {
+        squares[pacmanIndex].classList.remove('pac-man')
+        console.log(e.key)
+        switch (e.key) {
+            case 'ArrowLeft':
+                pacmanIndex -= 1
+                break
+            case 'ArrowRight':
+                pacmanIndex += 1
+                break
+            case 'ArrowUp':
+                pacmanIndex -= width
+                break
+            case 'ArrowDown':
+                pacmanIndex += width
+                break
+        }
+        squares[pacmanIndex].classList.add('pac-man')
+    }
+
+    document.addEventListener('keyup', movePacman);
 })
+

@@ -9,8 +9,6 @@
 .grid div{
     width: 20px;
     height: 20px;
-    border: solid red;
-    box-sizing: border-box;
 }
 
 .pac-dot{
@@ -42,6 +40,7 @@
 }
 .pac-man{
     background-color: yellow;
+    border-radius: 10px;
 }
 
 .scared-ghost{
