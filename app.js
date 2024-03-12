@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function createBoard() {
         for (let i = 0; i < layout.length; i++) {
             const square = document.createElement('div');
+            square.id=i
             grid.appendChild(square);
             squares.push(square);
 
@@ -79,21 +80,86 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(e.key)
         switch (e.key) {
             case 'ArrowLeft':
-                pacmanIndex -= 1
+                if (!squares[pacmanIndex - 1].classList.contains("wall")) {
+                    pacmanIndex -= 1
+                }
+                if(pacmanIndex==364){
+                    pacmanIndex=390
+                }
                 break
             case 'ArrowRight':
-                pacmanIndex += 1
+                if (!squares[pacmanIndex + 1].classList.contains("wall")) {
+                    pacmanIndex += 1
+                }
+                if(pacmanIndex==391){
+                    pacmanIndex=365
+                }
                 break
             case 'ArrowUp':
-                pacmanIndex -= width
+                if (!squares[pacmanIndex - width].classList.contains("wall")) {
+                    pacmanIndex -= width
+                }
                 break
             case 'ArrowDown':
-                pacmanIndex += width
+                if (!squares[pacmanIndex + width].classList.contains("wall")) {
+                    pacmanIndex += width
+                }
                 break
         }
         squares[pacmanIndex].classList.add('pac-man')
+        comePastilla();
+        superPoder();
     }
 
     document.addEventListener('keyup', movePacman);
+
+
+    function comePastilla(){
+        console.log(squares[pacmanIndex])
+        if(squares[pacmanIndex].classList.contains('pac-dot')){
+            score++;
+            scoreDisplay.innerHTML = score;
+    
+            squares[pacmanIndex].classList.remove('pac-dot');
+        }
+    }
+
+    function superPoder(){
+        console.log(squares[pacmanIndex])
+        if(squares[pacmanIndex].classList.contains('power-pellet')){
+            score+=10;
+            scoreDisplay.innerHTML = score;
+    
+            squares[pacmanIndex].classList.remove('power-pellet');
+        }
+    }
+
+    class Ghost {
+        constructor(className, startIndex, speed){
+            this.className = className;
+            this.startIndex = startIndex;
+            this.speed = speed;
+            this.ghostIndex = startIndex;
+            this.isScared = false;
+            this.timerId = NaN
+        }
+    }
+
+    ghosts = [
+        new Ghost('blinky', 348, 250),
+        new Ghost('pinky', 351, 400),
+        new Ghost('inky', 379, 500),
+        new Ghost('clyde', 376, 300),
+    ]
+
+    console.log(ghosts)
+
+
+    ghosts.forEach(ghost => {
+        squares[ghost.ghostIndex].classList.add(ghost.className);
+        squares[ghost.ghostIndex].classList.add('ghost');
+    });
 })
+
+
 
