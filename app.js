@@ -159,7 +159,24 @@ document.addEventListener('DOMContentLoaded', () => {
         squares[ghost.ghostIndex].classList.add(ghost.className);
         squares[ghost.ghostIndex].classList.add('ghost');
     });
+
+    ghosts.forEach(ghost => moveGhost(ghost));
+
+    function moveGhost(ghost){
+        console.log(ghost);
+        const directions = [-1, 1, width, -width];
+        const direction = directions[Math.floor(Math.random()*directions.length)]
+
+        ghost.timerId = setInterval(function(){
+            squares[ghost.ghostIndex].classList.remove(ghost.className,'ghost');
+            ghost.ghostIndex += direction;
+            squares[ghost.ghostIndex].classList.add(ghost.className,'ghost');
+        },ghost.speed)
+
+        
+    }
 })
+
 
 
 
