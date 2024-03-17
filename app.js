@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function createBoard() {
         for (let i = 0; i < layout.length; i++) {
             const square = document.createElement('div');
-            square.id=i
+            square.id = i
             grid.appendChild(square);
             squares.push(square);
 
@@ -83,16 +83,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!squares[pacmanIndex - 1].classList.contains("wall")) {
                     pacmanIndex -= 1
                 }
-                if(pacmanIndex==364){
-                    pacmanIndex=390
+                if (pacmanIndex == 364) {
+                    pacmanIndex = 390
                 }
                 break
             case 'ArrowRight':
                 if (!squares[pacmanIndex + 1].classList.contains("wall")) {
                     pacmanIndex += 1
                 }
-                if(pacmanIndex==391){
-                    pacmanIndex=365
+                if (pacmanIndex == 391) {
+                    pacmanIndex = 365
                 }
                 break
             case 'ArrowUp':
@@ -114,28 +114,35 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keyup', movePacman);
 
 
-    function comePastilla(){
+    function comePastilla() {
         console.log(squares[pacmanIndex])
-        if(squares[pacmanIndex].classList.contains('pac-dot')){
+        if (squares[pacmanIndex].classList.contains('pac-dot')) {
             score++;
             scoreDisplay.innerHTML = score;
-    
+
             squares[pacmanIndex].classList.remove('pac-dot');
         }
     }
 
-    function superPoder(){
+    function superPoder() {
         console.log(squares[pacmanIndex])
-        if(squares[pacmanIndex].classList.contains('power-pellet')){
-            score+=10;
+        if (squares[pacmanIndex].classList.contains('power-pellet')) {
+            score += 10;
             scoreDisplay.innerHTML = score;
-    
+
+            ghosts.forEach(ghost => ghost.isScared=true);
+            setTimeout(relax,10000);
+
             squares[pacmanIndex].classList.remove('power-pellet');
         }
     }
 
+    function relax(){
+        ghosts.forEach(ghost => ghost.isScared=false);
+    }
+
     class Ghost {
-        constructor(className, startIndex, speed){
+        constructor(className, startIndex, speed) {
             this.className = className;
             this.startIndex = startIndex;
             this.speed = speed;
@@ -162,18 +169,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     ghosts.forEach(ghost => moveGhost(ghost));
 
-    function moveGhost(ghost){
-        console.log(ghost);
+    function moveGhost(ghost) {
+
         const directions = [-1, 1, width, -width];
-        const direction = directions[Math.floor(Math.random()*directions.length)]
+        let direction = directions[Math.floor(Math.random() * directions.length)]
 
-        ghost.timerId = setInterval(function(){
-            squares[ghost.ghostIndex].classList.remove(ghost.className,'ghost');
-            ghost.ghostIndex += direction;
-            squares[ghost.ghostIndex].classList.add(ghost.className,'ghost');
-        },ghost.speed)
+        ghost.timerId = setInterval(function () {
 
-        
+            if (!squares[ghost.ghostIndex + direction].classList.contains('ghost') && 
+                !squares[ghost.ghostIndex + direction].classList.contains('wall')) {
+
+                squares[ghost.ghostIndex].classList.remove(ghost.className, 'ghost', 'scared');
+                ghost.ghostIndex += direction;
+                squares[ghost.ghostIndex].classList.add(ghost.className, 'ghost');
+
+            } else {
+                direction = directions[Math.floor(Math.random() * directions.length)]
+            }
+
+            if(ghost.isScared){
+                squares[ghost.ghostIndex].classList.add('scared');
+            }
+
+            if(ghost.isScared && squares[ghost.ghostIndex].classList.contains('pac-man')){
+                squares[ghost.ghostIndex].classList.remove('ghost', 'scared', ghost.className)
+                ghost.ghostIndex = ghost.startIndex;
+                score+=100;
+                scoreDisplay.innerHTML=score;
+                squares[ghost.ghostIndex].classList.add('ghost', ghost.className)
+            }
+
+        }, ghost.speed)
+
+
     }
 })
 
