@@ -9,40 +9,52 @@
 .grid div{
     width: 20px;
     height: 20px;
+    box-sizing: border-box;
 }
 
-.pac-dot{
+.puntets{
     background-color: green;
     border: 5px solid white;
     box-sizing: border-box;
 }
 
-.wall{
-    background-color: blue;
+.muro{
+    background-color: blueviolet;
 }
 
-.power-pellet{
+
+.poder{
     background-color: green;
     border-radius: 10px;
 }
 
-.blinky{
-    background-color: red;
-}
-.pinky{
-    background-color: pink;
-}
-.inky{
-    background-color: cyan;
-}
-.clyde{
-    background-color: orange;
-}
 .pac-man{
-    background-color: yellow;
+    background-color: rgb(180, 160, 6);
     border-radius: 10px;
 }
 
-.scared-ghost{
-    background-color: aquamarine;
+.pepe{
+    background-color: chartreuse;
+    border: none;
+}
+.pepa{
+    background-color: rgb(32, 20, 192);
+    border: none;
+}
+.paco{
+    background-color: rgb(224, 15, 32);
+    border: none;
+}
+.paca{
+    background-color: rgb(235, 12, 194);
+    border: none;
+}
+.kibili{
+    background-color: black;
+    border: none;
+}
+
+.fasustado{
+    background-color: rgb(144, 201, 251);
+    border: none;
 }

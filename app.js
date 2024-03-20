@@ -1,9 +1,15 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
 
-    const scoreDisplay = document.getElementById('score');
+    const scoreDisplay = document.getElementById("score");
+    const grid = document.querySelector('.grid');
     const width = 28;
     let score = 0;
-    const grid = document.querySelector('.grid');
+
+    // 0 - puntets
+    // 1 - muro
+    // 2 - fantasma
+    // 3 - poder
+    // 4 - buit
 
     const layout = [
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -17,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
         1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 1, 1, 2, 2, 1, 1, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 2, 2, 2, 2, 2, 2, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
         1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 2, 2, 2, 2, 2, 2, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
         4, 4, 4, 4, 4, 4, 0, 0, 0, 4, 1, 2, 2, 2, 2, 2, 2, 1, 4, 0, 0, 0, 4, 4, 4, 4, 4, 4,
         1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 2, 2, 2, 2, 2, 2, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
@@ -36,175 +42,182 @@ document.addEventListener('DOMContentLoaded', () => {
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
     ]
 
-    // 0 - pac-dots
-    // 1 - wall
-    // 2 - ghost-lair
-    // 3 - power-pellet
-    // 4 - empty
+    
+    const cuadrados = [];
 
-    const squares = [];
-    //create your board
     function createBoard() {
         for (let i = 0; i < layout.length; i++) {
-            const square = document.createElement('div');
-            square.id = i
-            grid.appendChild(square);
-            squares.push(square);
+            const cuadro = document.createElement('div');
+            cuadro.id = i
+            grid.appendChild(cuadro);
+            cuadrados.push(cuadro);
 
-            //add layout to the board
             if (layout[i] === 0) {
-                squares[i].classList.add('pac-dot');
+                cuadrados[i].classList.add('puntets');
             }
             if (layout[i] === 1) {
-                squares[i].classList.add('wall');
+                cuadrados[i].classList.add('muro');
             }
             if (layout[i] === 2) {
-                squares[i].classList.add('ghost-lair');
+                cuadrados[i].classList.add('fantasma');
             }
             if (layout[i] === 3) {
-                squares[i].classList.add('power-pellet');
+                cuadrados[i].classList.add('poder');
             }
+
         }
     }
 
     createBoard();
+  
 
     //Create PAC-MAN
 
     let pacmanIndex = 490;
-    squares[pacmanIndex].classList.add('pac-man');
+    cuadrados[pacmanIndex].classList.add('pac-man');
 
-    //move PacMan
-    function movePacman(e) {
-        squares[pacmanIndex].classList.remove('pac-man')
-        console.log(e.key)
-        switch (e.key) {
-            case 'ArrowLeft':
-                if (!squares[pacmanIndex - 1].classList.contains("wall")) {
-                    pacmanIndex -= 1
-                }
-                if (pacmanIndex == 364) {
-                    pacmanIndex = 390
-                }
-                break
-            case 'ArrowRight':
-                if (!squares[pacmanIndex + 1].classList.contains("wall")) {
-                    pacmanIndex += 1
-                }
-                if (pacmanIndex == 391) {
-                    pacmanIndex = 365
-                }
-                break
-            case 'ArrowUp':
-                if (!squares[pacmanIndex - width].classList.contains("wall")) {
-                    pacmanIndex -= width
-                }
-                break
-            case 'ArrowDown':
-                if (!squares[pacmanIndex + width].classList.contains("wall")) {
-                    pacmanIndex += width
-                }
-                break
+    function movePacman(tecla) {
+        cuadrados[pacmanIndex].classList.remove('pac-man');
+        if (tecla.key === 'ArrowUp' && !cuadrados[pacmanIndex - width].classList.contains('muro')) {
+            pacmanIndex -= width
         }
-        squares[pacmanIndex].classList.add('pac-man')
-        comePastilla();
+        if (tecla.key === 'ArrowDown' && !cuadrados[pacmanIndex + width].classList.contains('muro')) {
+            pacmanIndex += width
+        }
+        if (tecla.key === 'ArrowLeft' && !cuadrados[pacmanIndex - 1].classList.contains('muro')) {
+            pacmanIndex -= 1
+            if (pacmanIndex == 364) {
+                pacmanIndex = 391
+            }
+        }
+        if (tecla.key === 'ArrowRight' && !cuadrados[pacmanIndex + 1].classList.contains('muro')) {
+            pacmanIndex += 1
+            if (pacmanIndex == 391) {
+                pacmanIndex = 364
+            }
+        }
+        cuadrados[pacmanIndex].classList.add('pac-man');
+
+        comePipas();
         superPoder();
+        win();
+        gameOver();
     }
 
-    document.addEventListener('keyup', movePacman);
 
-
-    function comePastilla() {
-        console.log(squares[pacmanIndex])
-        if (squares[pacmanIndex].classList.contains('pac-dot')) {
+    function comePipas() {
+        if (cuadrados[pacmanIndex].classList.contains('puntets')) {
             score++;
             scoreDisplay.innerHTML = score;
-
-            squares[pacmanIndex].classList.remove('pac-dot');
+            cuadrados[pacmanIndex].classList.remove('puntets')
         }
     }
 
     function superPoder() {
-        console.log(squares[pacmanIndex])
-        if (squares[pacmanIndex].classList.contains('power-pellet')) {
+        if (cuadrados[pacmanIndex].classList.contains('poder')) {
             score += 10;
             scoreDisplay.innerHTML = score;
 
-            ghosts.forEach(ghost => ghost.isScared=true);
+            ghosts.forEach(fantasma => fantasma.asustat = true);
             setTimeout(relax,10000);
 
-            squares[pacmanIndex].classList.remove('power-pellet');
+            cuadrados[pacmanIndex].classList.remove('poder')
         }
     }
 
     function relax(){
-        ghosts.forEach(ghost => ghost.isScared=false);
+        ghosts.forEach(f => f.asustat = false);
     }
 
     class Ghost {
-        constructor(className, startIndex, speed) {
+        constructor(className, startIndex, vel) {
             this.className = className;
             this.startIndex = startIndex;
-            this.speed = speed;
+            this.vel = vel;
+            this.velAsustat = 800;
             this.ghostIndex = startIndex;
-            this.isScared = false;
+            this.asustat = false;
             this.timerId = NaN
         }
     }
 
     ghosts = [
-        new Ghost('blinky', 348, 250),
-        new Ghost('pinky', 351, 400),
-        new Ghost('inky', 379, 500),
-        new Ghost('clyde', 376, 300),
+        new Ghost('pepe', 348, 250),
+        new Ghost('paco', 351, 400),
+        new Ghost('pepa', 379, 500),
+        new Ghost('paca', 376, 300),
+        new Ghost('kibili', 377, 150),
     ]
 
-    console.log(ghosts)
 
 
     ghosts.forEach(ghost => {
-        squares[ghost.ghostIndex].classList.add(ghost.className);
-        squares[ghost.ghostIndex].classList.add('ghost');
+        cuadrados[ghost.ghostIndex].classList.add(ghost.className);
+        cuadrados[ghost.ghostIndex].classList.add('ghost');
     });
 
     ghosts.forEach(ghost => moveGhost(ghost));
 
-    function moveGhost(ghost) {
-
+    function moveGhost(ghost){
+        console.log(ghost);
         const directions = [-1, 1, width, -width];
-        let direction = directions[Math.floor(Math.random() * directions.length)]
 
-        ghost.timerId = setInterval(function () {
+        let direction = directions[Math.floor(Math.random()*directions.length)]
+    
+        ghost.timerId = setInterval(function(){
+            
+            if(!cuadrados[ghost.ghostIndex+direction].classList.contains('muro') 
+            && !cuadrados[ghost.ghostIndex+direction].classList.contains('ghost')){
 
-            if (!squares[ghost.ghostIndex + direction].classList.contains('ghost') && 
-                !squares[ghost.ghostIndex + direction].classList.contains('wall')) {
-
-                squares[ghost.ghostIndex].classList.remove(ghost.className, 'ghost', 'scared');
+                cuadrados[ghost.ghostIndex].classList.remove(ghost.className,'ghost','fasustado');
                 ghost.ghostIndex += direction;
-                squares[ghost.ghostIndex].classList.add(ghost.className, 'ghost');
+                cuadrados[ghost.ghostIndex].classList.add(ghost.className,'ghost');
 
-            } else {
-                direction = directions[Math.floor(Math.random() * directions.length)]
+            }else{
+                direction = directions[Math.floor(Math.random()*directions.length)]
             }
 
-            if(ghost.isScared){
-                squares[ghost.ghostIndex].classList.add('scared');
+            if(ghost.asustat){
+                cuadrados[ghost.ghostIndex].classList.add('fasustado');
+                //baixar vel
             }
 
-            if(ghost.isScared && squares[ghost.ghostIndex].classList.contains('pac-man')){
-                squares[ghost.ghostIndex].classList.remove('ghost', 'scared', ghost.className)
+            if(ghost.asustat && cuadrados[ghost.ghostIndex].classList.contains('pac-man')){
+                cuadrados[ghost.ghostIndex].classList.remove('fasustado', 'ghost', ghost.className);
                 ghost.ghostIndex = ghost.startIndex;
-                score+=100;
-                scoreDisplay.innerHTML=score;
-                squares[ghost.ghostIndex].classList.add('ghost', ghost.className)
+                ghost.asustat=false;
+                //score += 100;
+                //scoreDisplay.innerHTML = score;
+                cuadrados[ghost.ghostIndex].classList.add('ghost', ghost.className);
             }
+            gameOver();
+        },ghost.vel)
 
-        }, ghost.speed)
 
-
+        
     }
+
+    document.addEventListener('keyup', movePacman);
+
+    function gameOver(){
+        if(cuadrados[pacmanIndex].classList.contains('ghost') &&
+        !cuadrados[pacmanIndex].classList.contains('fasustado')){
+            ghosts.forEach(pau => clearInterval(pau.timerId))
+            document.removeEventListener('keyup', movePacman);
+            setTimeout(function(){
+                alert("Has Perdut")
+            },500)
+        }
+    }
+
+    function win(){
+        if(score == 274){
+            ghosts.forEach(paula => clearInterval(paula.timerId))
+            document.removeEventListener('keyup', movePacman);
+            setTimeout(function(){
+                alert("Has Guanyat")
+            },500)
+        }
+    }
+
 })
-
-
-
-
