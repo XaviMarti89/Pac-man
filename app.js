@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 2 - fantasma
     // 3 - poder
     // 4 - buit
+    // 5 - your Mother
 
     const layout = [
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
